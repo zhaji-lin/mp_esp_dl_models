@@ -6,12 +6,9 @@ set(SDKCONFIG_DEFAULTS
 )
 
 list(APPEND MICROPY_DEF_BOARD
-    MICROPY_HW_BOARD_NAME="Generic ESP32S3 module 16MB flash with Octal-SPIRAM"
+    MICROPY_HW_BOARD_NAME="Generic ESP32S3 16MB Octal-SPIRAM pedestrian detector"
 )
 
-set(MP_DL_FACE_DETECTOR_ENABLED 1)
-set(MP_DL_FACE_RECOGNITION_ENABLED 1)
+# Build only the model required by the application.  Keeping the switch in the
+# variant file is the method recommended by mp_esp_dl_models.
 set(MP_DL_PEDESTRIAN_DETECTOR_ENABLED 1)
-set(MP_DL_IMAGENET_CLS_ENABLED 1)
-set(MP_DL_COCO_DETECTOR_ENABLED 1)
-set(MP_DL_CAT_DETECTOR_ENABLED 1)
