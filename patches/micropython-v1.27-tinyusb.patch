@@ -1,0 +1,12 @@
+diff --git a/extmod/machine_usb_device.c b/extmod/machine_usb_device.c
+--- a/extmod/machine_usb_device.c
++++ b/extmod/machine_usb_device.c
+@@ -117,7 +117,7 @@ static mp_obj_t usb_device_submit_xfer(size_t n_args, const mp_obj_t *args) {
+         mp_raise_OSError(MP_EBUSY);
+     }
+ 
+-    result = usbd_edpt_xfer(RHPORT, ep_addr, buf_info.buf, buf_info.len);
++    result = usbd_edpt_xfer(RHPORT, ep_addr, buf_info.buf, buf_info.len, false);
+ 
+     if (result) {
+         // Store the buffer so that the xfer data remains valid.

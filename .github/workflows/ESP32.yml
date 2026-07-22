@@ -101,6 +101,8 @@ jobs:
       - name: Build MicroPython
         run: |
           source ${{ env.ESP_IDF_DIR }}/export.sh
+          git -C ${{ env.MICROPYTHON_DIR }} apply --check ${{ github.workspace }}/patches/micropython-v1.27-tinyusb.patch
+          git -C ${{ env.MICROPYTHON_DIR }} apply ${{ github.workspace }}/patches/micropython-v1.27-tinyusb.patch
           git clone --depth 1 https://github.com/cnadler86/micropython-camera-API.git ${{ env.MP_CAMERA_DIR }}
           git clone --depth 1 https://github.com/cnadler86/mp_jpeg.git ${{ env.MP_JPEG_DIR }}
           git clone --depth 1 https://github.com/cnadler86/esp32-camera.git ${{ env.ESP32_CAMERA_DIR }}
