@@ -107,13 +107,13 @@ jobs:
           IFS='@' read -r BUILD_TARGET CAMERA_MODEL <<< "${{ matrix.board }}"
           IFS='-' read -r BOARD_NAME BOARD_VARIANT <<< "${BUILD_TARGET}"
 
-          IDF_CMD="idf.py -D MICROPY_DIR=${{ env.MICROPYTHON_DIR }} -D MP_CAMERA_DIR=${{ github.workspace }}/../micropython-camera-API -D MP_JPEG_DIR=${{ github.workspace }}/../mp_jpeg -D MICROPY_BOARD=$BOARD_NAME -B build-$BUILD_TARGET"
+          IDF_CMD="idf.py -DMICROPY_DIR=${{ env.MICROPYTHON_DIR }} -DMP_CAMERA_DIR=${{ github.workspace }}/../micropython-camera-API -DMP_JPEG_DIR=${{ github.workspace }}/../mp_jpeg -DMICROPY_BOARD=$BOARD_NAME -B build-$BUILD_TARGET"
           if [ -n "${BOARD_VARIANT}" ]; then
-              IDF_CMD="$IDF_CMD -D MICROPY_BOARD_VARIANT=$BOARD_VARIANT"
+              IDF_CMD="$IDF_CMD -DMICROPY_BOARD_VARIANT=$BOARD_VARIANT"
           fi
           if [ -n "${CAMERA_MODEL}" ]; then
             echo "FW_NAME=${CAMERA_MODEL}" >> $GITHUB_ENV
-            FINAL_CMD="${IDF_CMD} -D MICROPY_CAMERA_MODEL=${CAMERA_MODEL} build"
+            FINAL_CMD="${IDF_CMD} -DMICROPY_CAMERA_MODEL=${CAMERA_MODEL} build"
           else
             echo "FW_NAME=${BUILD_TARGET}" >> $GITHUB_ENV
             FINAL_CMD="${IDF_CMD} build"
