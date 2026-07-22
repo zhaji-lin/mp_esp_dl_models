@@ -29,6 +29,7 @@ env:
   ARTIFACTS_DIR: /home/runner/artifacts
   MP_CAMERA_DIR: /home/runner/micropython-camera-API
   MP_JPEG_DIR: /home/runner/mp_jpeg
+  ESP32_CAMERA_DIR: /home/runner/esp32-camera
 
 jobs:
   setup-environment:
@@ -102,7 +103,7 @@ jobs:
           source ${{ env.ESP_IDF_DIR }}/export.sh
           git clone --depth 1 https://github.com/cnadler86/micropython-camera-API.git ${{ env.MP_CAMERA_DIR }}
           git clone --depth 1 https://github.com/cnadler86/mp_jpeg.git ${{ env.MP_JPEG_DIR }}
-          cp ${{ github.workspace }}/boards/idf_component.yml ${{ env.MICROPYTHON_DIR }}/ports/esp32/main/idf_component.yml
+          git clone --depth 1 https://github.com/cnadler86/esp32-camera.git ${{ env.ESP32_CAMERA_DIR }}
           
           cd ${{ github.workspace }}/boards/
           

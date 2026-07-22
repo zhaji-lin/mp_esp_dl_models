@@ -51,6 +51,12 @@ endif()
 
 set(MICROPY_FROZEN_MANIFEST ${MICROPY_PORT_DIR}/boards/manifest.py)
 
+# Register the camera driver before MicroPython processes its external user
+# modules.  The camera binding queries this component during configuration.
+if(DEFINED ENV{ESP32_CAMERA_DIR})
+    list(APPEND EXTRA_COMPONENT_DIRS "$ENV{ESP32_CAMERA_DIR}")
+endif()
+
 # Concatenate all sdkconfig files into a combined one for the IDF to use.
 file(WRITE ${CMAKE_BINARY_DIR}/sdkconfig.combined.in "")
 foreach(SDKCONFIG_DEFAULT ${SDKCONFIG_DEFAULTS})
