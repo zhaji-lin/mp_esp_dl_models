@@ -24,9 +24,11 @@ concurrency:
 
 env:
   MICROPYTHON_VERSION: v1.27.0
-  MICROPYTHON_DIR: ~/micropython
-  ESP_IDF_DIR: ~/esp-idf
-  ARTIFACTS_DIR: ~/artifacts
+  MICROPYTHON_DIR: /home/runner/micropython
+  ESP_IDF_DIR: /home/runner/esp-idf
+  ARTIFACTS_DIR: /home/runner/artifacts
+  MP_CAMERA_DIR: /home/runner/micropython-camera-API
+  MP_JPEG_DIR: /home/runner/mp_jpeg
 
 jobs:
   setup-environment:
@@ -42,7 +44,7 @@ jobs:
             ~/.espressif/
             ~/.cache/pip/
             ${{ env.MICROPYTHON_DIR }}
-          key: mpy-${{ env.MICROPYTHON_VERSION }}-idf-v5.4.2
+          key: mpy-${{ env.MICROPYTHON_VERSION }}-idf-v5.4.2-r2
 
       - name: Install dependencies (if not cached)
         if: steps.cache_esp_idf.outputs.cache-hit != 'true'
@@ -56,7 +58,8 @@ jobs:
           cd ~
           git clone --depth 1 --branch ${{ env.MICROPYTHON_VERSION }} https://github.com/micropython/micropython.git ${{ env.MICROPYTHON_DIR }}
           cd ${{ env.MICROPYTHON_DIR }}
-          git submodule update --init --depth 1
+          git submodule update --init --recursive --depth 1
+          make -C ports/esp32 BOARD=ESP32_GENERIC_S3 submodules
           cd mpy-cross && make
 
       - name: Set up ESP-IDF
@@ -87,7 +90,7 @@ jobs:
             ~/.espressif/
             ~/.cache/pip/
             ${{ env.MICROPYTHON_DIR }}
-          key: mpy-${{ env.MICROPYTHON_VERSION }}-idf-v5.4.2
+          key: mpy-${{ env.MICROPYTHON_VERSION }}-idf-v5.4.2-r2
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -97,9 +100,8 @@ jobs:
       - name: Build MicroPython
         run: |
           source ${{ env.ESP_IDF_DIR }}/export.sh
-          cd ${{ github.workspace }} && cd ..
-          git clone https://github.com/cnadler86/micropython-camera-API.git
-          git clone https://github.com/cnadler86/mp_jpeg.git
+          git clone --depth 1 https://github.com/cnadler86/micropython-camera-API.git ${{ env.MP_CAMERA_DIR }}
+          git clone --depth 1 https://github.com/cnadler86/mp_jpeg.git ${{ env.MP_JPEG_DIR }}
           
           cd ${{ github.workspace }}/boards/
           
@@ -107,7 +109,7 @@ jobs:
           IFS='@' read -r BUILD_TARGET CAMERA_MODEL <<< "${{ matrix.board }}"
           IFS='-' read -r BOARD_NAME BOARD_VARIANT <<< "${BUILD_TARGET}"
 
-          IDF_CMD="idf.py -DMICROPY_DIR=${{ env.MICROPYTHON_DIR }} -DMP_CAMERA_DIR=${{ github.workspace }}/../micropython-camera-API -DMP_JPEG_DIR=${{ github.workspace }}/../mp_jpeg -DMICROPY_BOARD=$BOARD_NAME -B build-$BUILD_TARGET"
+          IDF_CMD="idf.py -DMICROPY_DIR=${{ env.MICROPYTHON_DIR }} -DMP_CAMERA_DIR=${{ env.MP_CAMERA_DIR }} -DMP_JPEG_DIR=${{ env.MP_JPEG_DIR }} -DMICROPY_BOARD=$BOARD_NAME -B build-$BUILD_TARGET"
           if [ -n "${BOARD_VARIANT}" ]; then
               IDF_CMD="$IDF_CMD -DMICROPY_BOARD_VARIANT=$BOARD_VARIANT"
           fi
