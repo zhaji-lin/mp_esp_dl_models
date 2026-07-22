@@ -102,6 +102,7 @@ jobs:
           source ${{ env.ESP_IDF_DIR }}/export.sh
           git clone --depth 1 https://github.com/cnadler86/micropython-camera-API.git ${{ env.MP_CAMERA_DIR }}
           git clone --depth 1 https://github.com/cnadler86/mp_jpeg.git ${{ env.MP_JPEG_DIR }}
+          cp ${{ github.workspace }}/boards/idf_component.yml ${{ env.MICROPYTHON_DIR }}/ports/esp32/main/idf_component.yml
           
           cd ${{ github.workspace }}/boards/
           
