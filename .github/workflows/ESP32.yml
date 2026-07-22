@@ -58,8 +58,7 @@ jobs:
           cd ~
           git clone --depth 1 --branch ${{ env.MICROPYTHON_VERSION }} https://github.com/micropython/micropython.git ${{ env.MICROPYTHON_DIR }}
           cd ${{ env.MICROPYTHON_DIR }}
-          git submodule update --init --recursive --depth 1
-          make -C ports/esp32 BOARD=ESP32_GENERIC_S3 submodules
+          git submodule update --init --depth 1
           cd mpy-cross && make
 
       - name: Set up ESP-IDF
@@ -71,6 +70,7 @@ jobs:
           git -C ${{ env.ESP_IDF_DIR }} submodule update --init --recursive --filter=tree:0
           cd ${{ env.ESP_IDF_DIR }} && ./install.sh esp32s3
           source ./export.sh
+          make -C ${{ env.MICROPYTHON_DIR }}/ports/esp32 BOARD=ESP32_GENERIC_S3 submodules
 
   build:
     needs: setup-environment
