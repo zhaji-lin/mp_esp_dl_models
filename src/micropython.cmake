@@ -68,6 +68,16 @@ if (MP_DL_CAT_DETECTOR_ENABLED)
     )
 endif()
 
+# CMake cache definitions passed through idf.py are not guaranteed to remain
+# visible while MicroPython processes user modules.  Fall back to the workflow
+# environment variables when needed.
+if(NOT DEFINED MP_CAMERA_DIR AND DEFINED ENV{MP_CAMERA_DIR})
+    set(MP_CAMERA_DIR "$ENV{MP_CAMERA_DIR}")
+endif()
+if(NOT DEFINED MP_JPEG_DIR AND DEFINED ENV{MP_JPEG_DIR})
+    set(MP_JPEG_DIR "$ENV{MP_JPEG_DIR}")
+endif()
+
 # Check if Camera is set or if Camera directory exists two levels up
 if(DEFINED MP_CAMERA_DIR AND EXISTS "${MP_CAMERA_DIR}")
     message(STATUS "Using user-defined MP_CAMERA_DIR: ${MP_CAMERA_DIR}")
